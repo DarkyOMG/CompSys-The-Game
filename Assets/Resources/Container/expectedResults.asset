@@ -10,6 +10,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e2947ccccefd37d4986597cbf6d1113b, type: 3}
-  m_Name: expectedResults
+  m_Name: ExpectedResults
   m_EditorClassIdentifier: 
-  valueArray: 
+  valueArray: 0100000000000000

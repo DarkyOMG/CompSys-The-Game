@@ -10,5 +10,5 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5ee45d414fa5725439054c7eafe15c58, type: 3}
-  m_Name: charges
+  m_Name: Charges
   m_EditorClassIdentifier: 
