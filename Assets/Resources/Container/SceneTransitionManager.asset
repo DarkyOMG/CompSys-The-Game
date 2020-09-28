@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9777559359d09864c9369de162a48936, type: 3}
+  m_Name: SceneTransitionManager
+  m_EditorClassIdentifier: 
+  _variableCount: {fileID: 11400000, guid: 7cf4ac37cf55a084a95f111af776cc55, type: 2}
+  _expectedValues: {fileID: 11400000, guid: f7b95ae39480e294f9f86da2d8202cf3, type: 2}
+  _difficulty: {fileID: 11400000, guid: 0a60b60b300d2fd4791b2b7a928e0899, type: 2}
+  _outputCount: {fileID: 11400000, guid: 1700ea4521451604d806f87c16455c62, type: 2}
+  _timeLimit: {fileID: 11400000, guid: 0544bb50888c91e44af38e8884dd4164, type: 2}
+  _reward: {fileID: 11400000, guid: 8b90c6c53e18ad74389defacaf7539a4, type: 2}
+  _nextScene: {fileID: 11400000, guid: 2deb0a2c240ff4e4495500e9246d955d, type: 2}
+  _gameMode: {fileID: 11400000, guid: 355f99e825e893e44a1de0ed8d5cae51, type: 2}
