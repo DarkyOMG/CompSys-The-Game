@@ -51,8 +51,8 @@ public class Plotter : MonoBehaviour
         _outputs = new MultiCellElement[_outputCount.value];
         _mainCamera.go = this.gameObject;
         _grid = new Grid(100, 100, 5, Vector3.zero);
-        GridClickHandler.instance.ChangeGIT(GameInputType.Plotter);
-        GridClickHandler.instance.floatingText = _floatingText;
+        InputHandler.instance.ChangeGIT(GameInputType.Plotter);
+        InputHandler.instance.floatingText = _floatingText;
         _mainGrid.grid = _grid;
         GameObject empty = Resources.Load<GameObject>("Prefabs/emptyCube");
         _filler.go = empty;

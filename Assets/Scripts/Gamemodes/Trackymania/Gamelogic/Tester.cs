@@ -49,7 +49,7 @@ public class Tester : MonoBehaviour
 
             }
         }
-        GridClickHandler.instance.ChangeGIT(GameInputType.GateBuilder);
+        InputHandler.instance.ChangeGIT(GameInputType.GateBuilder);
         Placer.PlaceObject(inventory, ground, 0, 0);
         GameObject start = Resources.Load<GameObject>("Prefabs/start");
         GameObject end = Resources.Load<GameObject>("Prefabs/end");

@@ -16,7 +16,7 @@ public class TutorialHandler : MonoBehaviour
     private void Start()
     {
         // Change the current inputbehaviour to Tutorial-Input-Behaviour.
-        GridClickHandler.instance.ChangeGIT(GameInputType.Intro);
+        InputHandler.instance.ChangeGIT(GameInputType.Intro);
         // Activate the panel for the given Gamemode or intro.
         _panels[_gameModeInt.value].SetActive(true);
     }

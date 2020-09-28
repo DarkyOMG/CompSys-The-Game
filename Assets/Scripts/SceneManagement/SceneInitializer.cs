@@ -14,7 +14,7 @@ public class SceneInitializer : MonoBehaviour
 {
     // Rerefencing all Singleton-ScriptableObjects, so they are available in the Scene.
     public SceneTransitionManager gameManager;
-    public GridClickHandler clickHandler;
+    public InputHandler clickHandler;
     public AudioManager audioManager;
 
     // Reference to the main Camera ScriptableObjectVariable.

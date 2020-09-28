@@ -69,7 +69,7 @@ public class KVHandler : MonoBehaviour
         _grid = new Grid(_width, _height, 12, _gridOffset);
         _mainGrid.grid = _grid;
 
-        GridClickHandler.instance.ChangeGIT(GameInputType.KV);
+        InputHandler.instance.ChangeGIT(GameInputType.KV);
         Dictionary<char, bool> temp = new Dictionary<char, bool>();
         GameObject empty = Resources.Load<GameObject>("Prefabs/empty");
 
@@ -228,7 +228,7 @@ public class KVHandler : MonoBehaviour
                 _stageTwoPanel.SetActive(true);
                 _stageOneFinished = true;
                 ChangeGUI();
-                GridClickHandler.instance.ChangeGIT(GameInputType.None);
+                InputHandler.instance.ChangeGIT(GameInputType.None);
             }
         } else
         {

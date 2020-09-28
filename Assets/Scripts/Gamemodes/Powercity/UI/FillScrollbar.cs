@@ -20,8 +20,8 @@ public class FillScrollbar : MonoBehaviour
             if(tempObj && !tempObj.Locked)
             {
                 GameObject tempButton = Instantiate(_button, _contentGo.transform);
-                tempButton.GetComponent<Button>().onClick.AddListener(delegate { GridClickHandler.instance.SelectNewElement(temp); });
-                tempButton.GetComponent<Button>().onClick.AddListener(delegate { GridClickHandler.instance.FillSelectionResultTable(); });
+                tempButton.GetComponent<Button>().onClick.AddListener(delegate { InputHandler.instance.SelectNewElement(temp); });
+                tempButton.GetComponent<Button>().onClick.AddListener(delegate { InputHandler.instance.FillSelectionResultTable(); });
                 TMP_Text text = tempButton.GetComponentInChildren<TMP_Text>();
                 text.text = temp.name;
             }

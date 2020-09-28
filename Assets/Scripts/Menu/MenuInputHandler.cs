@@ -15,7 +15,7 @@ public class MenuInputHandler : MonoBehaviour
     public void Awake()
     {
         // Configure Inputhandling
-        GridClickHandler.instance.ChangeGIT(GameInputType.Menu);
+        InputHandler.instance.ChangeGIT(GameInputType.Menu);
 
         // Set Cursorstate to free and visible.
         Cursor.lockState = CursorLockMode.None;

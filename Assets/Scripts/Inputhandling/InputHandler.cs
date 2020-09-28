@@ -15,8 +15,8 @@ public enum GameInputType { KV,GateBuilder,Plotter,None,Menu,DecimalEncoder,Intr
  * Contains all inputbehaviour and activates or deactivates input-behaviour depending on the current game-mode.
  * Uses Singleton pattern to only have one input-handling throughout the game.
  */ 
-[CreateAssetMenu(menuName = "Manager/GridClickHandler")]
-public class GridClickHandler : SingletonScriptableObject<GridClickHandler>
+[CreateAssetMenu(menuName = "Manager/InputHandler")]
+public class InputHandler : SingletonScriptableObject<InputHandler>
 {
 
     // Reference to unity-generated input-behaviour-script.
@@ -299,9 +299,15 @@ public class GridClickHandler : SingletonScriptableObject<GridClickHandler>
     ////////////////////////////////////////////////////////////////////////////////////////////
     // Powercity Input-Behaviour Methods
 
-
+    /*
+     * Method to increase or decrease the orthographic size of the camera-windows, thus zooming in or out.
+     * @param   context Actionevent-context that triggered the method. In this case a move of the mousewheel. 
+     * This returns a Vector2 that is used to determine the dicretion of the mouse-wheel-scroll.
+     */ 
     private void ScrollMouse(InputAction.CallbackContext context)
     {
+        // If the Vector2.y value is smaller than 0, meaning the mouse-wheel was scrolled backwards, zoom out. Otherwise, zoom in.
+        // If the max or min zoomfactor is hit, do stop zooming.
         if (context.ReadValue<Vector2>().y < 0)
         {
             if (_camera.go.GetComponent<Camera>().orthographicSize + 5 <= _scrollMax)
@@ -318,52 +324,75 @@ public class GridClickHandler : SingletonScriptableObject<GridClickHandler>
         }
     }
 
+    /*
+     * Method to handle left-mouse clicks. These can lead to various cases, depending on the clicked Object in the scene.
+     * @param   context Context of the Actionevent. In this case the method is triggered by leftclick. The information about the event are not used further.
+     */ 
     private void TestClick(InputAction.CallbackContext context)
     {
-
-
+        // First, cast a ray from the camera through the mouse-cursor and check for hits.
         Ray ray = _camera.go.GetComponent<Camera>().ScreenPointToRay(Mouse.current.position.ReadValue());
         RaycastHit hit;
+        // If an object was hit, check various cases.
         if (Physics.Raycast(ray, out hit))
         {
+            // Get the coordinates of the hit object in the grid.
             Vector2Int temp = _mainGrid.grid.GetCoordinate(hit.point);
+
+            // If the hit object in the grid is a multiCellElement, show it's truthtable in the selection UI-Panel and return.
             if (_mainGrid.grid.GetObjFromCoordinate(temp).GetComponent<MultiCellElement>())
             {
                 FillSelectionResultTable(_mainGrid.grid.GetObjFromCoordinate(temp).GetComponent<MultiCellElement>());
                 return;
             }
+            // If anything else was hit, hide the selection UI-panel.
             else
             {
                 selectionPanel.go.SetActive(false);
             }
+
+
+            // If the player hasn't selected a specific object to place, start placing connections as long as the left-mouse button is held down.
+            // This is done by changing input-behaviour to place a connection every frame, that the mouse has moved.
+            // Either the player has already placed a connection-element, in that case only the input-behaviour has to be changed. 
+            // Otherwise, the connection-element has to be placed in the inventory.
             if (!selected.go)
             {
-                _inputs.Schaltnetz.PreviewBuilding.performed += PlaceConnection;
+               _inputs.Schaltnetz.PreviewBuilding.performed += PlaceConnection;
                 selected.go = _connection.go;
                 UpdatePreview();
             }
             else
             if (selected.go == _connection.go)
             {
-
                 _inputs.Schaltnetz.PreviewBuilding.performed += PlaceConnection;
             }
+
+
+            // If the player has something in the inventory, that is not null or a connection-element, takes this route.
             if (temp.x >= 0)
             {
+                // Check if the player still has to place incoming or outgoingsockets. If so, try to place the correct element on the clicked spot.
+                // If there are no left sockets left to place, skip this part
+
+                // If there are sockets to place, first the incoming, then the outgoing sockets are going to be placed. 
                 if (_incomingSocketsToPlace > 0 || _outgoingSocketsToPlace > 0)
                 {
                     if (_incomingSocketsToPlace > 0)
                     {
                         PlaceIncomingSocket(temp, tempTargetCoord, _filler.go);
+                        // After placing the last incoming socket, change the element in the inventory for the next placement.
                         if (_incomingSocketsToPlace <= 0)
                         {
                             selected.go = _outgoingSocketPrefab;
                             UpdatePreview();
                         }
                     }
+                    // After all incoming sockets have been placed, place all outgoing sockets.
                     else
                     {
                         PlaceOutgoingSocket(temp, tempTargetCoord, _filler.go);
+                        // When all outgoingsockets are placed, reset the inventory and unlock the selection.
                         if (_outgoingSocketsToPlace <= 0)
                         {
                             _selectionBlocked = false;
@@ -372,30 +401,53 @@ public class GridClickHandler : SingletonScriptableObject<GridClickHandler>
                         }
                     }
                 }
+
+                // This section handles the case, that the player wants to place an element, that is not a connection and has no sockets left to place.
                 else
                 {
+                    // Variable used to store a reference to the newly placed element.
                     GameObject tempObj;
 
+                    // Give the player auditive feedback about the placement.
                     AudioManager.instance.PlaySound(clips[0]);
+
+                    // If the element in the inventory only is 1x1 gridcells big, just place it on the grid.
                     if (selected.go.GetComponent<GridElement>().size.x == 1 && selected.go.GetComponent<GridElement>().size.y == 1)
                     {
+                        // Place the object and take a reference.
                         tempObj = Placer.PlaceObject(_mainGrid.grid, selected.go, temp.x, temp.y, _filler.go);
                     }
+                    // Bigger elements need to be placed differently, since there can happen multiple conflicts while placing them on the grid.
                     else
                     {
+                        // Place the object and take a reference.
                         tempObj = Placer.PlaceMultiCellObject(_mainGrid.grid, selected.go, temp.x, temp.y, _filler.go);
+
+                        // Bigger elements get a text to identify them on the board. They get a Tag with the given name that is placed right above them.
                         if (tempObj.GetComponentInChildren<TMP_Text>())
                         {
                             tempObj.GetComponentInChildren<TMP_Text>().text = tempObj.GetComponent<MultiCellElement>().name;
                         }
                     }
+
+                    // After placing an object, check if the object needs to have incoming or outgoing sockets. If so, set the counters and lock the selection.
+                    // This way, the player will have to place all remaining sockets before being able to place more elements.
                     if (tempObj && (tempObj.GetComponent<GridElement>().incomingSocketCount > 0 || tempObj.GetComponent<GridElement>().outComingSocketCount > 0))
                     {
+                        // Block the player from placing other elements, while having to place sockets.
                         _selectionBlocked = true;
+
+                        // Save the coordinates of the newly placed object for when the incoming and outgoing sockets are being planced.
                         tempTargetCoord = temp;
+
+                        // Increase the counter to show how many sockets need to be placed.
                         _incomingSocketsToPlace = tempObj.GetComponent<GridElement>().incomingSocketCount;
                         _outgoingSocketsToPlace = tempObj.GetComponent<GridElement>().outComingSocketCount;
+
+                        // Start by placing incoming sockets by filling the inventory with an incoming socket.
                         selected.go = _incomingSocketPrefab;
+
+                        // Update the preview, so the player can see where the element would be placed.
                         UpdatePreview();
                     }
                 }
@@ -403,119 +455,195 @@ public class GridClickHandler : SingletonScriptableObject<GridClickHandler>
         }
     }
 
+    /*
+     * This functions places an incoming socket and adjusts it's parameters to react correctly when being visited.
+     * @param   coords      The coordinates to place the socket on the grid.
+     * @param   targetCoord The coordinates of the logic-element to which this sockets belongs to.
+     * @param   filler      The filler-object that is used to fill spaces, in case the placement of the sockets causes a conflict with a multi-cell-element.
+     */ 
     private void PlaceIncomingSocket(Vector2Int coords, Vector2Int targetCoords, GameObject filler)
     {
+        // Only place the socket, if the coords is adjacent to the logic-element.
         if (Placer.IsAdjacent(_mainGrid.grid, coords, targetCoords))
         {
+            // Get a reference to the newly placed socket.
             GameObject tempObj;
             tempObj = Placer.PlaceObject(_mainGrid.grid, selected.go, coords.x, coords.y, _filler.go);
+
+            // If the placement was successfull, play a sound and adjust attributes of the socket and the logic-element.
             if (tempObj)
             {
-
+                // Auditive feedback for the successfull placement.
                 AudioManager.instance.PlaySound(clips[0]);
+                // Set the target-logic-element coordinates to the saved coordinates.
                 tempObj.GetComponent<SocketOfGridElement>().coordsToTarget = tempTargetCoord;
+                // Set the target-logic-element to be the target of the socket.
                 tempObj.GetComponent<SocketOfGridElement>().targetGo = _mainGrid.grid.GetObjFromCoordinate(tempTargetCoord);
+                // Add this socket to the list of incoming sockets of the logic-element.
                 MultiCellElement targetMCE = _mainGrid.grid.GetObjFromCoordinate(tempTargetCoord).GetComponent<MultiCellElement>();
+
+                // Nullchecking the element. Might not really be neccessary, if the inventory is correct, which it should.
                 if (tempObj.GetComponentInChildren<TMP_Text>())
                 {
-
+                    // Set the text of the prefab to the corresponding variable it resembles.
+                    // The first incoming socket is always A, the second is B, the third is C and so on.
                     tempObj.GetComponentInChildren<TMP_Text>().text = ((Charge)targetMCE.incomingSockets.Count + 1).ToString();
                 }
                 targetMCE.AddToList(targetMCE.incomingSockets, coords);
 
+                // Decrement the number of incoming sockets needed to be placed by the player.
                 _incomingSocketsToPlace--;
 
             }
         }
+        // Show a message, reminding the player that sockets need to be placed adjacent to the element.
         else
         {
             floatingText.GetComponent<Animation>().Play();
         }
     }
 
+    /*
+     * Similar to placing an incoming socket, but still different.
+     * @param   coords      The coordinates to place the socket on the grid.
+     * @param   targetCoord The coordinates of the logic-element to which this sockets belongs to.
+     * @param   filler      The filler-object that is used to fill spaces, in case the placement of the sockets causes a conflict with a multi-cell-element.  
+     */
     private void PlaceOutgoingSocket(Vector2Int coords, Vector2Int targetCoords, GameObject filler)
     {
+        // Also outgoing sockets can only be placed adjacent to logic-elements.
         if (Placer.IsAdjacent(_mainGrid.grid, coords, targetCoords))
         {
+
+            // Get a reference to the newly placed socket.
             GameObject tempObj;
             tempObj = Placer.PlaceObject(_mainGrid.grid, selected.go, coords.x, coords.y, _filler.go);
+
+
+            // If the placement was successfull, play a sound and adjust attributes of the socket and the logic-element.
             if (tempObj)
             {
                 AudioManager.instance.PlaySound(clips[0]);
+
+                // Since outgoingsockets can't be visited, we only need to add the socket to the logic-elements list of outgoing sockets.
+                // There is no need to define a target for the outgoing socket.
                 MultiCellElement targetMCE = _mainGrid.grid.GetObjFromCoordinate(tempTargetCoord).GetComponent<MultiCellElement>();
                 if (tempObj.GetComponentInChildren<TMP_Text>())
                 {
-
+                    // Set the text of the prefab to the corresponding variable it resembles.
+                    // The first outgoing socket is always 0, the second is 1, the third is 2 and so on.
                     tempObj.GetComponentInChildren<TMP_Text>().text = targetMCE.outgoingSockets.Count.ToString();
                 }
                 targetMCE.AddToList(targetMCE.outgoingSockets, coords);
                 targetMCE.outgoingSocketObjects.Add(tempObj.GetComponent<OutGoingSocket>());
+
+
+                // Decrement the number of incoming sockets needed to be placed by the player.
                 _outgoingSocketsToPlace--;
 
             }
         }
+        // Show a message, reminding the player that sockets need to be placed adjacent to the element.
         else
         {
             floatingText.GetComponent<Animation>().Play();
         }
     }
 
+    // Changes the current element in the inventory to a new game-object (go).
     public void SelectNewElement(GameObject go)
     {
+        // Only change the selection, if the selection is not blocked.
         if (!_selectionBlocked)
         {
             selected.go = go;
+            // Update the preview-element, so the player can see where to place the object.
             UpdatePreview();
         }
-
     }
 
+    /*
+     * Starts removing grid-elements that are below the cursor, by changeing input-behaviour. 
+     * In this case, on each mouse movement and while the right mouse is held down, the element below the cursor is removed.
+     * @param   context The information provided with the click-event. In this case the right-mouse-button click event.
+     */ 
     public void Remove(InputAction.CallbackContext context)
     {
         _inputs.Schaltnetz.PreviewBuilding.performed += RemoveMore;
-
-
     }
 
+    /*
+     * If the player releases the right mouse button, the last grid-element is being removed and the input-behaviour is reset.
+     * @param   context The information provided with the triggering event. In this case the release of the right-mouse-button.
+     */ 
     public void StopRemoving(InputAction.CallbackContext context)
     {
+        // Before resetting the input-bevaviour to not remove any object, after the mouse moved, remove the last element which was hit.
+
+        // Placing and removing objects is only allowed, when the selection is not blocked.
+        // This indicates that there is no socket left to place for a logic-element.
         if (!_selectionBlocked)
         {
+            // Cast a ray from the camera through the cursor and identify the hit object.
             Ray ray = _camera.go.GetComponent<Camera>().ScreenPointToRay(Mouse.current.position.ReadValue());
             RaycastHit hit;
+
+            // If any object has been hit, remove it from the grid and play a feedback sound.
             if (Physics.Raycast(ray, out hit))
             {
-
+                // Play a sound through to indicate a successfull removal.
                 AudioManager.instance.PlaySound(clips[0]);
+
+                // Identify the hit by it's coordinates in the grid.
                 Vector2Int temp = _mainGrid.grid.GetCoordinate(hit.point);
-                Placer.PlaceObject(_mainGrid.grid, _filler.go, temp.x, temp.y, _filler.go);
 
-                AudioManager.instance.PlaySound(clips[0]);
+                // Place a filler-element on the identified coordinates, thusly "removing" the element.
+                Placer.PlaceObject(_mainGrid.grid, _filler.go, temp.x, temp.y, _filler.go);
             }
         }
+
+        // After the last element has been removed, reset to normal input-bevahiour
         _inputs.Schaltnetz.PreviewBuilding.performed -= RemoveMore;
     }
 
+    /*
+     * Method to be added to the input-behaviour when removing objects is needed. This will be done by the Remove-Method.
+     * After adding this method to the input-behaviour, it will be triggered every frame the mouse has moved, removing all objects the mouse has hit.
+     * @param   context Informationen provided with the triggering event. In this case the movement of the mouse.
+     */ 
     public void RemoveMore(InputAction.CallbackContext context)
     {
+        // Placing and removing objects is only allowed, when the selection is not blocked.
+        // This indicates that there is no socket left to place for a logic-element.
         if (!_selectionBlocked)
         {
+            // Cast a ray from the camera through the cursor and get a refenrence to the hit object, if there is one.
             Ray ray = _camera.go.GetComponent<Camera>().ScreenPointToRay(Mouse.current.position.ReadValue());
             RaycastHit hit;
+
+            // If an object was hit, try removing it. This will be successfull, if it is a removeable grid-element.
             if (Physics.Raycast(ray, out hit))
             {
-
+                // Play a sound to indicate a successfull removal.
                 AudioManager.instance.PlaySound(clips[0]);
+
+                // Get the coordinates of the hit object in the grid.
                 Vector2Int temp = _mainGrid.grid.GetCoordinate(hit.point);
-                Placer.PlaceObject(_mainGrid.grid, _filler.go, temp.x, temp.y, _filler.go);
 
-                AudioManager.instance.PlaySound(clips[0]);
+                // Remove the hit object by placing a filler-element on it's coordinates.
+                Placer.PlaceObject(_mainGrid.grid, _filler.go, temp.x, temp.y, _filler.go);
             }
         }
     }
 
+    /*
+     * Starts moving the camera by invoking the move-method on the camera.
+     * @param   context The information provided by the triggering event. This is a vector2, calculated by the buttons pressed and the corresponding axis.
+     * W- and S-keys determine the y-Axis, while A- and D-keys determine the x-Axis.
+     */ 
     public void MoveCamera(InputAction.CallbackContext context)
     {
+        // Nullchecking for the MoveCamera-Component on the main-Camera-Gameobject.
         MoveCamera temp = _camera.go.GetComponent<MoveCamera>();
         if (temp)
         {
@@ -524,30 +652,47 @@ public class GridClickHandler : SingletonScriptableObject<GridClickHandler>
         }
     }
 
+    // Stops autoplacing connections. This is triggered by releasing the left mouse-button, after placing a connection.
     private void StopPlacing(InputAction.CallbackContext context)
     {
-
         _inputs.Schaltnetz.PreviewBuilding.performed -= PlaceConnection;
-
     }
 
+    /*
+     * After being added to the input-behaviour, this method is called every frame the mouse has moved and is used to continously place connections,
+     * while the left mouse-button is being held down.
+     * @param   context Information provided by the triggering event. In this case the movement of the mouse.
+     */ 
     private void PlaceConnection(InputAction.CallbackContext context)
     {
+        // Cast a ray from the camera through the cursor and keep a reference to the hit object.
         Ray ray = _camera.go.GetComponent<Camera>().ScreenPointToRay(Mouse.current.position.ReadValue());
         RaycastHit hit;
+
+        // If an object was hit, place a connection-element on it's place.
         if (Physics.Raycast(ray, out hit))
         {
+            // Get the coordinates of the hit grid-element, if it is one.
             Vector2Int temp = _mainGrid.grid.GetCoordinate(hit.point);
+            // Place a connection element on the hit grid-element.
             Placer.PlaceObject(_mainGrid.grid, selected.go, temp.x, temp.y, _filler.go);
         }
     }
 
+    /*
+     * On logic-elements, it can be useful to see it's truthtable.
+     * This method is called by various input-behaviours and displays the truthtable of the clicked or selected logic-element.
+     * @param   mceObject   The MultiCellElement of which to show the truthtable. If this is null, show the truthtable of the element in the inventory.
+     */ 
     public void FillSelectionResultTable(MultiCellElement mceObject = null)
     {
+        // If no object was given, get the MultiCellElement-Component of the element in the inventory.
         if (mceObject == null)
         {
             mceObject = selected.go.GetComponent<MultiCellElement>();
         }
+
+        // Fill the selectionpanel with the truthtable of the determined MCE (MultiCellElement) if it is presentable.
         if (mceObject && mceObject.isPresentable)
         {
             UITableFiller.FillTable(selectionPanel.go, mceObject.resultList, mceObject.outComingSocketCount, mceObject.incomingSocketCount, mceObject.resultList, width: 300, height: 205);
@@ -555,21 +700,27 @@ public class GridClickHandler : SingletonScriptableObject<GridClickHandler>
         }
     }
 
+
+    /*
+     * Show a preview of the currently chosen element on the grid, to indicate where the selected element would be placed on the grid.
+     * This is done by creating an object of the same size as the selected element and placing it right above the grid. 
+     * @param   context Information provided from the triggering event. In this case the movement of the mouse. 
+     */ 
     private void PreviewOnLocation(InputAction.CallbackContext context)
     {
+        // The first case is used, if the player has an element in the inventory, but a preview-object hasn't been build yet.
         if (!_previewObject.go && selected.go)
         {
-
+            // Create a preview-object, by copying the element in the inventory and scaling it to accomidate the right cellsize.
             _previewObject.go = Instantiate(selected.go);
             _previewObject.go.GetComponent<Renderer>().material = _previewMat;
             int x = _previewObject.go.GetComponent<GridElement>().size.x;
             int y = _previewObject.go.GetComponent<GridElement>().size.y;
             float sizeOffsetX = 1 * x / _previewObject.go.GetComponent<Renderer>().bounds.size.x;
             float sizeOffsetY = 1 * y / _previewObject.go.GetComponent<Renderer>().bounds.size.y;
-
             _previewObject.go.transform.localScale = new Vector3(_mainGrid.grid.FieldSize * sizeOffsetX, _mainGrid.grid.FieldSize * sizeOffsetY, 1);
-
         }
+        // If there is an preview-object build already, place it right over the calculated coordinates.
         if (_previewObject.go)
         {
             Ray ray = _camera.go.GetComponent<Camera>().ScreenPointToRay(Mouse.current.position.ReadValue());
@@ -578,35 +729,91 @@ public class GridClickHandler : SingletonScriptableObject<GridClickHandler>
             Vector2Int temp = _mainGrid.grid.GetCoordinate(hit.point);
             Placer.PlacePreview(_mainGrid.grid, _previewObject.go, temp.x, temp.y);
         }
+    }
 
+    /*
+     * Used to update the preview-object on various events.
+     */ 
+    public void UpdatePreview()
+    {
+        // If there is an element in the inventory, build a preview-object of it.
+        if (selected.go)
+        {
+            // Delete the previous preview-object if there is one.
+            if (_previewObject.go)
+            {
+                Destroy(_previewObject.go);
+            }
+
+            // Create a new preview-object from the element in the inventory and scale it to accomidate the cellsize of the grid.
+            _previewObject.go = Instantiate(selected.go);
+
+            _previewObject.go.GetComponent<Renderer>().material = _previewMat;
+            int x = _previewObject.go.GetComponent<GridElement>().size.x;
+            int y = _previewObject.go.GetComponent<GridElement>().size.y;
+            float sizeOffsetX = 1 * x / _previewObject.go.GetComponent<Renderer>().bounds.size.x;
+            float sizeOffsetY = 1 * y / _previewObject.go.GetComponent<Renderer>().bounds.size.y;
+
+            _previewObject.go.transform.localScale = new Vector3(_mainGrid.grid.FieldSize * sizeOffsetX, _mainGrid.grid.FieldSize * sizeOffsetY, 1);
+        }
+        // If there is no element selected, clear the preview-object so nothing is being previewed on the grid.
+        else
+        {
+            Destroy(_previewObject.go);
+            _previewObject.go = null;
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////
     // Number Push Input-Behaviour Methods
 
+    /*
+     * Rotates the camera on the y-axis on specific input-actions. 
+     * @param   context Informationen provided by the triggering event. In this case movement of the mouse. It holds a Float-value of the mouse-movement.
+     */ 
     private void RotateCamera(InputAction.CallbackContext context)
     {
+        // Calls the Rotate-method of the CameraRotation-Component of the main-camera with the given float-value. Thus rotating the camera in the y-Axis.
         _camera.go.GetComponent<CameraRotation>().Rotate(context.ReadValue<float>());
     }
 
+
+    /*
+     * Rotates the player on the x-axis on specific input-actions. 
+     * @param   context Informationen provided by the triggering event. In this case movement of the mouse. It holds a Float-value of the mouse-movement.
+     */
     private void RotatePlayer(InputAction.CallbackContext context)
     {
-        
+        // Calls the Rotate-method of the PlayerRotation-Component of the player with the given float-value. Thus rotating the player in the x-Axis.
         _player.go.GetComponent<PlayerRotation>().Rotate(context.ReadValue<float>());
     }
 
+    /*
+     * Moves the player on specific input-actions. 
+     * @param   context Informationen provided by the triggering event. In this case pressing the Axis-Buttons (W, A, S & D). The context holds a Vector2.
+     * W- and S-keys determine the y-Axis, while A- and D-keys determine the x-Axis.
+     */
     private void MovePlayer(InputAction.CallbackContext context)
     {
+        // Calls the Rotate-method of the PlayerRotation-Component of the player with the given vector2-value. Thus moving the player with the given vector2.
         _player.go.GetComponent<PlayerMovement>().Move(context.ReadValue<Vector2>());
     }
 
+    /*
+     * Activates the currently pointed at Interactable, if there is one. 
+     * @param   context Information provided by the triggering event. In this case pressing the E-Button. 
+     */ 
     private void Activate(InputAction.CallbackContext context)
     {
-
+        // Check, if there currently is a object, that is being looked at through the camera.
+        // This is filled by the CameraTargeting-Script on the player-Camera.
         if (_temp.go)
         {
+            // Activate the currently looked at object.
             _temp.go.GetComponent<Interactable>().Activate();
-        } else
+        }
+        else
+        // If nothing is looked at, drop what's inside the players inventory 2 meters in front of the player and 2 meters high in the air.
         if (selected.go)
         {
             Vector3 temp = _player.go.transform.position+ _player.go.transform.forward*2;
@@ -614,14 +821,14 @@ public class GridClickHandler : SingletonScriptableObject<GridClickHandler>
             selected.go.transform.position = temp;
             selected.go = null;
         }
-
+        // Update the UI in case the player has picked up or dropped something.
         _UIManager.go.GetComponent<UIManager>().UpdateUI();
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////
     // Menu Input-Behaviour Methods
 
-
+    // On ESC-Button press, quit the application.
     private void EndGame(InputAction.CallbackContext context)
     {
         Application.Quit();
@@ -630,8 +837,13 @@ public class GridClickHandler : SingletonScriptableObject<GridClickHandler>
     ////////////////////////////////////////////////////////////////////////////////////////////
     // General Input-Behaviour Methods
 
+    /*
+     * Cancel method, to either present the Pause menu, or stop placing a logic element on Powercity.
+     * @param   context Information provided by the triggering event. In this case the buttonpress on the ESC-key.
+     */ 
     private void Cancel(InputAction.CallbackContext context)
     {
+        // If the selection is blocked, and therefore the player must be placing sockets to an logic-element in powercity, stop this process.
         if (_selectionBlocked)
         {
             Placer.PlaceObject(_mainGrid.grid, _filler.go, tempTargetCoord.x, tempTargetCoord.y, _filler.go);
@@ -641,17 +853,22 @@ public class GridClickHandler : SingletonScriptableObject<GridClickHandler>
             selected.go = null;
             return;
         }
+        // In any other case, pause the game.
         PauseGame();
-
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////
     // Helper-Methods
 
+    /*
+     * Pause and unpause the game and show or hide the pause-menu. On Number-Push do additional cursor-management.
+     */ 
     public void PauseGame()
     {
+        // If the game is paused and the pause menu is shown, hide it and unpause.
         if (_pausemenu.go.activeSelf)
         {
+            // On Number push, reactivate movement-behaviour and lock and hide the cursor in the center.
             if (_currentGIT == GameInputType.DecimalEncoder)
             {
                 _inputs.DecimalEncoder.RotatePlayer.performed += RotatePlayer;
@@ -662,8 +879,11 @@ public class GridClickHandler : SingletonScriptableObject<GridClickHandler>
             }
             _pausemenu.go.SetActive(false);
         }
+
+        // If the game is not paused, show the pause menu and stop movement.
         else
         {
+            // On Number push, stop player-movement and rotation, aswell as unlocking and showing the cursor.
             if (_currentGIT == GameInputType.DecimalEncoder)
             {
                 _inputs.DecimalEncoder.RotatePlayer.performed -= RotatePlayer;
@@ -674,32 +894,4 @@ public class GridClickHandler : SingletonScriptableObject<GridClickHandler>
             _pausemenu.go.SetActive(true);
         }
     }
-
-
-    public void UpdatePreview()
-    {
-        if (selected.go)
-        {
-            if (_previewObject.go)
-            {
-                Destroy(_previewObject.go);
-            }
-            _previewObject.go = Instantiate(selected.go);
-
-            _previewObject.go.GetComponent<Renderer>().material = _previewMat;
-            int x = _previewObject.go.GetComponent<GridElement>().size.x;
-            int y = _previewObject.go.GetComponent<GridElement>().size.y;
-            float sizeOffsetX = 1 * x / _previewObject.go.GetComponent<Renderer>().bounds.size.x;
-            float sizeOffsetY = 1 * y / _previewObject.go.GetComponent<Renderer>().bounds.size.y;
-
-            _previewObject.go.transform.localScale = new Vector3(_mainGrid.grid.FieldSize * sizeOffsetX, _mainGrid.grid.FieldSize * sizeOffsetY, 1);
-        }
-        else
-        {
-            Destroy(_previewObject.go);
-            _previewObject.go = null;
-        }
-
-    }
-
 }

@@ -27,7 +27,7 @@ public class DecimalManager : MonoBehaviour
         _player.go = _playerGo;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        GridClickHandler.instance.ChangeGIT(GameInputType.DecimalEncoder);
+        InputHandler.instance.ChangeGIT(GameInputType.DecimalEncoder);
         SpawnCubes();
         
         
