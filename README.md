@@ -10,7 +10,7 @@ The asset-folder by itself is only structured into the games aspects, like Audio
 Ressources are the assets, that can or will be loaded into the game, such as ScriptableObjects, prefabs or certain sprites.
 * Container
   
-ScriptableObjectsVariables, which are being used to save variables class-independently. These can then be accessed by all classes in the scene, without the need for a designated monobehaviour. These hold information, such as the currently configured mouse-sensetivity or Audio-volumes. Also loaded here are the ScriptableObjectSingletons, which are needed to manage global aspects of the game. See more in the chapter Global Management.
+ScriptableObjectsVariables, which are being used to save variables class-independently. These can then be accessed by all classes in the scene, without the need for a designated monobehaviour. These hold information, such as the currently configured mouse-sensetivity or Audio-volumes. Also loaded here are the ScriptableObjectSingletons, which are needed to manage global aspects of the game. See more in the chapter **Global Management**.
 * LevelSetups
   
 In this folder are pre-defined Level-Setups for different game modes. These Level-Setup files hold information about the difficulty, game-mode and other information, which are needed to load a level for a specific minigame.
@@ -25,7 +25,7 @@ This folder holds all scripts of the game. The top-level of the folder holds all
 The Gamemodes folder holds scripts specific for certain minigames and scenes, like local managers or special UI management for the Tutorial scene or powercity-minigame. See chapter **Managers** for more details.
 ## Managers
 Managers are used to handle certain aspects of the game. For example the Audiomanager manages all audio-related behaviour, while the inputhandler handles all inputs.
-In this implementation, the managers are divided into global managers and local managers. Global managers are used in every scene of the game. They handle aspects of the game that is needed in every game mode. Local managers are what define the rules of a specific scene and therefore the current game mode.
+In this implementation, the managers are divided into global managers and local managers. Global managers are used in every scene of the game. They handle aspects of the game that are needed in every game mode. Local managers are what define the rules of a specific scene and therefore the current game mode.
 ### Global Management
 Global management of the game is mostly done through ScriptableObjects-Singletons. ScriptableObject-Singletons are ScriptableObjects, which can be saved as an asset, that hold gamelogic. As the name suggests, they are designed with the singleton-pattern. These objects can be found in Ressources/Container/Global Managers. They inherit from the SingletonScriptableObject-class in scripts/ScriptableObjectScripts. Their specific scripts then hold logic to manage the game over multiple scenes. 
 #### Inputhandling
