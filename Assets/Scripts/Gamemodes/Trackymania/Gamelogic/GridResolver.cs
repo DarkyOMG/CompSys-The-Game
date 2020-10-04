@@ -6,11 +6,11 @@ using UnityEngine;
 public static class GridResolver
 {
 
-    public static int ResolveGrid(Grid grid, List<Tester.StartingPointData> startingPoints, Vector2Int endPoint)
+    public static int ResolveGrid(Grid grid, List<CMOSHandler.StartingPointData> startingPoints, Vector2Int endPoint)
     {
         int result = 0;
         List<GridElement> resetList = new List<GridElement>();
-        foreach (Tester.StartingPointData startingPoint in startingPoints)
+        foreach (CMOSHandler.StartingPointData startingPoint in startingPoints)
         {
             resetList.AddRange(ResolveRoute(grid, startingPoint.position, startingPoint.charge));
 

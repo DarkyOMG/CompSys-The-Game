@@ -7,7 +7,7 @@ using UnityEngine.UI;
 using System.Linq;
 
 public enum Charge {A = 1,B,C,D,E,F,G,H,I};
-public class Tester : MonoBehaviour
+public class CMOSHandler : MonoBehaviour
 {
     public Grid grid;
     public Grid inventory;

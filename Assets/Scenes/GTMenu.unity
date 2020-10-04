@@ -283,7 +283,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 11400000, guid: 254264bb89f9d2c4c8934b205f28fb55,
             type: 2}
-          m_ObjectArgumentAssemblyTypeName: GateBuilderSetupSO, Assembly-CSharp
+          m_ObjectArgumentAssemblyTypeName: LevelSetupSO, Assembly-CSharp
           m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
@@ -414,7 +414,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 11400000, guid: cd4471a794ac3f247acc0372bdeb8ab5,
             type: 2}
-          m_ObjectArgumentAssemblyTypeName: GateBuilderSetupSO, Assembly-CSharp
+          m_ObjectArgumentAssemblyTypeName: LevelSetupSO, Assembly-CSharp
           m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
@@ -4039,7 +4039,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 11400000, guid: 9d6bf9da0a8356a41a1f7b0e88882b14,
             type: 2}
-          m_ObjectArgumentAssemblyTypeName: GateBuilderSetupSO, Assembly-CSharp
+          m_ObjectArgumentAssemblyTypeName: LevelSetupSO, Assembly-CSharp
           m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
@@ -4467,7 +4467,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 11400000, guid: f413ab205d2a03a47a964ecceea57746,
             type: 2}
-          m_ObjectArgumentAssemblyTypeName: GateBuilderSetupSO, Assembly-CSharp
+          m_ObjectArgumentAssemblyTypeName: LevelSetupSO, Assembly-CSharp
           m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
@@ -4828,7 +4828,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 11400000, guid: a811a0eace307c341837797fea36e827,
             type: 2}
-          m_ObjectArgumentAssemblyTypeName: GateBuilderSetupSO, Assembly-CSharp
+          m_ObjectArgumentAssemblyTypeName: LevelSetupSO, Assembly-CSharp
           m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
@@ -6032,13 +6032,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameManager: {fileID: 11400000, guid: b386d391d741f7041a2dda9255919c5c, type: 2}
-  clickHandler: {fileID: 11400000, guid: 60b29f55882b4014f98726be5dffb9f9, type: 2}
+  inputHandler: {fileID: 0}
+  audioManager: {fileID: 11400000, guid: ce85e79bbb7808243992fc7d6ec1883b, type: 2}
   mainCamera: {fileID: 11400000, guid: b12b0a2d9379d5b4eb9a3d47e7938775, type: 2}
   audioSourceSFX: {fileID: 11400000, guid: ba929b0421af4884e9e9a1389ca290f6, type: 2}
-  audioSourceMusic: {fileID: 11400000, guid: 35c0da1601b268e41b508879a2178c9d, type: 2}
   audioSourceGOSFX: {fileID: 700542386}
+  audioSourceMusic: {fileID: 11400000, guid: 35c0da1601b268e41b508879a2178c9d, type: 2}
   audioSourceGOMusic: {fileID: 768070078}
-  audioManager: {fileID: 11400000, guid: ce85e79bbb7808243992fc7d6ec1883b, type: 2}
   pauseMenu: {fileID: 0}
   pauseMenuGO: {fileID: 0}
 --- !u!114 &768070083
@@ -6179,7 +6179,6 @@ MonoBehaviour:
   - {fileID: 66925492}
   - {fileID: 1063261417}
   - {fileID: 1913467074}
-  _gameState: {fileID: 11400000, guid: 59d7c14ab5b1ec747b9bea337e2ecc93, type: 2}
   _winPanel: {fileID: 1922094312}
   _mainMenuPanel: {fileID: 1830289305}
 --- !u!1 &780741697
@@ -7388,7 +7387,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 11400000, guid: e4e83f7e891ffee479d0a2d235452699,
             type: 2}
-          m_ObjectArgumentAssemblyTypeName: GateBuilderSetupSO, Assembly-CSharp
+          m_ObjectArgumentAssemblyTypeName: LevelSetupSO, Assembly-CSharp
           m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
@@ -7789,7 +7788,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 11400000, guid: f4d6820d511d81a43b3676b02434a29c,
             type: 2}
-          m_ObjectArgumentAssemblyTypeName: GateBuilderSetupSO, Assembly-CSharp
+          m_ObjectArgumentAssemblyTypeName: LevelSetupSO, Assembly-CSharp
           m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
@@ -8375,7 +8374,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 11400000, guid: 9c14d259583c5c24b8ead56564876a17,
             type: 2}
-          m_ObjectArgumentAssemblyTypeName: GateBuilderSetupSO, Assembly-CSharp
+          m_ObjectArgumentAssemblyTypeName: LevelSetupSO, Assembly-CSharp
           m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
@@ -8662,7 +8661,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 11400000, guid: 920e81576d9626f40a01651c63a1bcc1,
             type: 2}
-          m_ObjectArgumentAssemblyTypeName: GateBuilderSetupSO, Assembly-CSharp
+          m_ObjectArgumentAssemblyTypeName: LevelSetupSO, Assembly-CSharp
           m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
@@ -9371,7 +9370,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 11400000, guid: b99858b8b5e6f08449f4a3cdddd94af4,
             type: 2}
-          m_ObjectArgumentAssemblyTypeName: GateBuilderSetupSO, Assembly-CSharp
+          m_ObjectArgumentAssemblyTypeName: LevelSetupSO, Assembly-CSharp
           m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
@@ -10136,7 +10135,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 11400000, guid: f789f815b35dafb4797290799983aacb,
             type: 2}
-          m_ObjectArgumentAssemblyTypeName: GateBuilderSetupSO, Assembly-CSharp
+          m_ObjectArgumentAssemblyTypeName: LevelSetupSO, Assembly-CSharp
           m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
@@ -11939,7 +11938,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 11400000, guid: 627b287c5e18803438575168ec21f741,
             type: 2}
-          m_ObjectArgumentAssemblyTypeName: GateBuilderSetupSO, Assembly-CSharp
+          m_ObjectArgumentAssemblyTypeName: LevelSetupSO, Assembly-CSharp
           m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
@@ -12564,7 +12563,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 11400000, guid: c7a84d2807a50db46818d58e9ed59046,
             type: 2}
-          m_ObjectArgumentAssemblyTypeName: GateBuilderSetupSO, Assembly-CSharp
+          m_ObjectArgumentAssemblyTypeName: LevelSetupSO, Assembly-CSharp
           m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
@@ -13089,7 +13088,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 11400000, guid: 1d7e2c93c7ac6e04f93ec515f5d1f8c4,
             type: 2}
-          m_ObjectArgumentAssemblyTypeName: GateBuilderSetupSO, Assembly-CSharp
+          m_ObjectArgumentAssemblyTypeName: LevelSetupSO, Assembly-CSharp
           m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
@@ -13296,7 +13295,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 11400000, guid: b18c0948ed720ca409dbbf78a3280745,
             type: 2}
-          m_ObjectArgumentAssemblyTypeName: GateBuilderSetupSO, Assembly-CSharp
+          m_ObjectArgumentAssemblyTypeName: LevelSetupSO, Assembly-CSharp
           m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
@@ -14336,7 +14335,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 11400000, guid: 6806f6f1fa5252d44be4324062a6b509,
             type: 2}
-          m_ObjectArgumentAssemblyTypeName: GateBuilderSetupSO, Assembly-CSharp
+          m_ObjectArgumentAssemblyTypeName: LevelSetupSO, Assembly-CSharp
           m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 

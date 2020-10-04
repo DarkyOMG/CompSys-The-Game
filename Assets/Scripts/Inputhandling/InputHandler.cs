@@ -123,7 +123,7 @@ public class InputHandler : SingletonScriptableObject<InputHandler>
             _inputs.Schaltnetz.Enable();
             _inputs.Schaltnetz.Cancel.performed += Cancel;
             _inputs.Schaltnetz.MoveCamera.performed += MoveCamera;
-            _inputs.Schaltnetz.ClickAction.performed += TestClick;
+            _inputs.Schaltnetz.ClickAction.performed += LeftClickPC;
             _inputs.Schaltnetz.Scroll.performed += ScrollMouse;
             _inputs.Schaltnetz.PreviewBuilding.performed += PreviewOnLocation;
             _inputs.Schaltnetz.Remove.performed += Remove;
@@ -174,7 +174,7 @@ public class InputHandler : SingletonScriptableObject<InputHandler>
         {
             _inputs.Schaltnetz.Cancel.performed -= Cancel;
             _inputs.Schaltnetz.MoveCamera.performed -= MoveCamera;
-            _inputs.Schaltnetz.ClickAction.performed -= TestClick;
+            _inputs.Schaltnetz.ClickAction.performed -= LeftClickPC;
             _inputs.Schaltnetz.PreviewBuilding.performed -= PreviewOnLocation;
             _inputs.Schaltnetz.Scroll.performed -= ScrollMouse;
             _inputs.Schaltnetz.Remove.performed -= Remove;
@@ -328,7 +328,7 @@ public class InputHandler : SingletonScriptableObject<InputHandler>
      * Method to handle left-mouse clicks. These can lead to various cases, depending on the clicked Object in the scene.
      * @param   context Context of the Actionevent. In this case the method is triggered by leftclick. The information about the event are not used further.
      */ 
-    private void TestClick(InputAction.CallbackContext context)
+    private void LeftClickPC(InputAction.CallbackContext context)
     {
         // First, cast a ray from the camera through the mouse-cursor and check for hits.
         Ray ray = _camera.go.GetComponent<Camera>().ScreenPointToRay(Mouse.current.position.ReadValue());

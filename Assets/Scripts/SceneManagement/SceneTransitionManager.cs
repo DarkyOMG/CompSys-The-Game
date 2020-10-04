@@ -7,7 +7,8 @@ using UnityEngine.SceneManagement;
  * Class to handle scene Transistions. 
  * Holds references to all neccessary Scriptable Objects, that need to be changed when switching scenes.
  * On Scene transition, these Scriptableobject-Variables are then adjusted to enable level-generation in the next-scene.
- */ 
+ */
+public enum GameType { KV, GateBuilder, ALU, Decimal, Intro };
 [CreateAssetMenu(menuName = "Manager/SceneTransitionManager")]
 public class SceneTransitionManager : SingletonScriptableObject<SceneTransitionManager>
 {
@@ -26,7 +27,7 @@ public class SceneTransitionManager : SingletonScriptableObject<SceneTransitionM
      * On transition, set the ScriptableObjectVariables to the values given by the GateBuilderSetup.
      * @param   param   A ScriptableObject that holds information about the scene Transition, like game-mode, reward, difficulty and so on.
      */ 
-    public void Transition(GateBuilderSetupSO param)
+    public void Transition(LevelSetupSO param)
     {
         // Setting the ScriptableObjectVariables to the corresponding values in param.
         _variableCount.value = param._variableCount;

@@ -20,3 +20,4 @@ MonoBehaviour:
   _reward: {fileID: 11400000, guid: 8b90c6c53e18ad74389defacaf7539a4, type: 2}
   _nextScene: {fileID: 11400000, guid: 2deb0a2c240ff4e4495500e9246d955d, type: 2}
   _gameMode: {fileID: 11400000, guid: 355f99e825e893e44a1de0ed8d5cae51, type: 2}
+  _audioSourceSFX: {fileID: 0}

@@ -11,7 +11,7 @@ public struct RouteData
     public int route;
     public Vector2Int position;
 }
-public class Plotter : MonoBehaviour
+public class PlotterHandler : MonoBehaviour
 {
     private Grid _grid;
     private int _height = 100;

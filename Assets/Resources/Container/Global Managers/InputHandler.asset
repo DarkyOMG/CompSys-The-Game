@@ -10,15 +10,20 @@ MonoBehaviour:
   m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dc1e5db5d4ae3ce4cbbc3e5c3157d570, type: 3}
-  m_Name: GridClickHandler
+  m_Name: InputHandler
   m_EditorClassIdentifier: 
-  selected: {fileID: 11400000, guid: b2f7a09168944484c9b711bc01935dae, type: 2}
-  _tutPanel: {fileID: 0}
-  _uIPanel: {fileID: 0}
   _currentGIT: 5
+  selected: {fileID: 11400000, guid: b2f7a09168944484c9b711bc01935dae, type: 2}
   _camera: {fileID: 11400000, guid: b12b0a2d9379d5b4eb9a3d47e7938775, type: 2}
   _mainGrid: {fileID: 11400000, guid: 59724c5329380134883ab5677cb5df3e, type: 2}
   _auxGrid: {fileID: 11400000, guid: 8cc71c27ab45e574da3ce441801cb68c, type: 2}
+  _pausemenu: {fileID: 11400000, guid: 5401da69a6580564195b546fa5fa73de, type: 2}
+  clips:
+  - {fileID: 8300000, guid: adeaca2d5665973439e53aa646036d4a, type: 3}
+  - {fileID: 8300000, guid: 8ec00cbcf1164074295e84956edcc981, type: 3}
+  - {fileID: 8300000, guid: f9cc38a3bce07394b84419fd7f3294e1, type: 3}
+  - {fileID: 8300000, guid: 340fa24289394b44a93073e4f557047a, type: 3}
+  - {fileID: 8300000, guid: 53958d5f997e2ac45b9e4962d799702e, type: 3}
   _filler: {fileID: 11400000, guid: 1e8bd2b8bd1d4f3428de8158576244b7, type: 2}
   _scrollMin: 50
   _scrollMax: 250
@@ -32,13 +37,6 @@ MonoBehaviour:
   _connection: {fileID: 11400000, guid: 349aec6847bff684d9e428bf4fc05afd, type: 2}
   floatingText: {fileID: 0}
   selectionPanel: {fileID: 11400000, guid: 82a6143471fe39d498e5e3d6ef5a32bb, type: 2}
-  clips:
-  - {fileID: 8300000, guid: adeaca2d5665973439e53aa646036d4a, type: 3}
-  - {fileID: 8300000, guid: 8ec00cbcf1164074295e84956edcc981, type: 3}
-  - {fileID: 8300000, guid: f9cc38a3bce07394b84419fd7f3294e1, type: 3}
-  - {fileID: 8300000, guid: 340fa24289394b44a93073e4f557047a, type: 3}
-  - {fileID: 8300000, guid: 53958d5f997e2ac45b9e4962d799702e, type: 3}
   _player: {fileID: 11400000, guid: 4a6c4754df8e45943b55e3a664a7e754, type: 2}
   _temp: {fileID: 11400000, guid: d43ec998660c84a4aa17923a21520eee, type: 2}
   _UIManager: {fileID: 11400000, guid: 4f85ab0d818d2854da1ec723d03b477d, type: 2}
-  _pausemenu: {fileID: 11400000, guid: 5401da69a6580564195b546fa5fa73de, type: 2}
